@@ -1,0 +1,305 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Question 1 - Harris Corner Detection</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-13"><meta name="DC.source" content="myHarrisCornerDetector.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Question 1 - Harris Corner Detection</h1><!--introduction--><p>First, read in the image, and apply gaussian smoothing with standard deviation sigma_smoothing. Then, compute the x and y derivative images <img src="myHarrisCornerDetector_eq11508508002233644711.png" alt="$I_x$" style="width:12px;height:13px;"> and <img src="myHarrisCornerDetector_eq05960738100551949621.png" alt="$I_y$" style="width:11px;height:15px;"> and hence the structure tensor A at each point. Finally, use the eigenvalues <img src="myHarrisCornerDetector_eq06952556603745606606.png" alt="$\lambda_1$" style="width:13px;height:13px;"> and <img src="myHarrisCornerDetector_eq01939127397082388770.png" alt="$\lambda_2$" style="width:13px;height:13px;"> at each point to find cornerness, C, given by <img src="myHarrisCornerDetector_eq00328800372189859764.png" alt="$$ C = \lambda_1\times\lambda_2 - k(\lambda_1 + \lambda_2)^2 $$" style="width:166px;height:17px;"></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Derivative Images</a></li><li><a href="#4">Structure Tensor Calculation</a></li><li><a href="#6">Cornerness Measure</a></li><li><a href="#8">Non max suppression (using Bilinear Interpolation)</a></li><li><a href="#10">Bilinear Interpolation</a></li><li><a href="#11">Parameter Values used</a></li></ul></div><pre class="codeinput">myNumOfColors = 200;
+myColorScale = [ [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' ];
+im_0 = load(<span class="string">"../data/boat.mat"</span>);
+im_0 = cast(im_0.imageOrig, <span class="string">'uint8'</span>);
+[M,N] = size(im_0);
+<span class="comment">% Gaussian Smoothing</span>
+sigma_smoothing = 4;
+im = imgaussfilt(im_0, sigma_smoothing);
+</pre><h2 id="2">Derivative Images</h2><p>Convolve the smoothed image with the sobel operator to compute the x and y derivatives of the image. Display these. Note that the x derivative will highlight vertical edges, while the y derivative will highlight horizontal edges.</p><pre class="codeinput">sobel_x = [-1 0 1; -2 0 2; -1 0 1];
+sobel_y = [1 2 1; 0 0 0; -1 -2 -1];
+
+im_Ix = conv2(im, sobel_x, <span class="string">'same'</span>);
+im_Iy = conv2(im, sobel_y, <span class="string">'same'</span>);
+
+figure(), imagesc(cast(im_Ix,<span class="string">'uint8'</span>)), title(<span class="string">"X derivative"</span>), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+figure(), imagesc(cast(im_Iy,<span class="string">'uint8'</span>)), title(<span class="string">"Y derivative"</span>), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+</pre><img vspace="5" hspace="5" src="myHarrisCornerDetector_01.png" alt=""> <img vspace="5" hspace="5" src="myHarrisCornerDetector_02.png" alt=""> <h2 id="4">Structure Tensor Calculation</h2><p>To compute the structure tensor, observe from its formula that the first entry of the structure tensor matrix (the summation) is nothing but the filter w(u,v) convolved with an image with value at each location equal to the square of the x derivative of the image at that location. Similarly for the other entries. We use these observations to compute the entries of the structure tensor A at each point, and then use this to compute the eigenvalues of the structure tensor at each point. Finally, display the images corresponding to the matrices that store the eigenvalues. We can observe that along edges of the ship's hull, for example, the second eigenvalue comes out to be large, while the first comes out to be small. Only along corners are both eigenvalues large. The first eigenvalue may thus be called the "principal" eigenvalue, since it seems to determine which points we actually classify as corners. Note that in our case, w(u,v) is a standard gaussian kernel of bandwidth parameter sigma. Sigma is kept relatively small, since if we increase it, more points along edges are attributed as corners, which we don't want.</p><pre class="codeinput">im_Ix2 = im_Ix.*im_Ix;
+im_Iy2 = im_Iy.*im_Iy;
+im_IxIy = im_Ix.*im_Iy;
+
+<span class="comment">% structure tensor evaluation</span>
+sigma = 1.5;
+<span class="comment">% matrices corresponding to A11, A12=A21 and A22</span>
+A11_mat = imgaussfilt(im_Ix2, sigma);
+A12_mat = imgaussfilt(im_IxIy, sigma);
+A22_mat = imgaussfilt(im_Iy2, sigma);
+<span class="comment">% store eigenvalues in two matrices</span>
+im_lambda1 = zeros(M,N);
+im_lambda2 = zeros(M,N);
+<span class="comment">% at each pixel (i,j), compute A11, A12=A21, and A22, and hence eigenvalues</span>
+
+<span class="keyword">for</span> i = 1 : M
+    <span class="keyword">for</span> j = 1 : N
+        <span class="comment">% structure tensor</span>
+        A11 = A11_mat(i,j);
+        A12 = A12_mat(i,j);
+        A22 = A22_mat(i,j);
+        A = [A11 A12; A12 A22];
+        <span class="comment">% eigenvalues</span>
+        e = eig(A);
+        im_lambda1(i,j) = e(1);
+        im_lambda2(i,j) = e(2);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+figure(), imagesc(cast(im_lambda1,<span class="string">'uint8'</span>)), title(<span class="string">"1st eigenvalue"</span>), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+figure(), imagesc(cast(im_lambda2,<span class="string">'uint8'</span>)), title(<span class="string">"2nd eigenvalue"</span>), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+</pre><img vspace="5" hspace="5" src="myHarrisCornerDetector_03.png" alt=""> <img vspace="5" hspace="5" src="myHarrisCornerDetector_04.png" alt=""> <img vspace="5" hspace="5" src="myHarrisCornerDetector_05.png" alt=""> <h2 id="6">Cornerness Measure</h2><p>Using the two matrices to store the two eigenvalues at each point, we compute the cornerness measure at each point, tuned by the free parameter 'k'. Note that k is kept on the higher side since we don't want too many pixels to be denoted as corners.</p><pre class="codeinput">k = 0.24;
+C = (im_lambda1 .* im_lambda2) - k*((im_lambda1 + im_lambda2).*(im_lambda1 + im_lambda2));
+</pre><h2 id="8">Non max suppression (using Bilinear Interpolation)</h2><p>To refine the result, apply non-maximum suppression on C. However, this is not expected to significantly improve the result since most of the image C has flat regions of negligible cornerness, with sparsely distributed "corner" points.</p><pre class="codeinput">C_nms = C;
+<span class="comment">% gradient of cornerness image</span>
+C_x = conv2(C, sobel_x, <span class="string">'same'</span>);
+C_y = conv2(C, sobel_y, <span class="string">'same'</span>);
+<span class="keyword">for</span> i = 2 : M-1
+    <span class="keyword">for</span> j = 2 : N-1
+        <span class="comment">% gradient magnitude</span>
+        vp = sqrt(C_x(i,j)^2 + C_y(i,j)^2);
+        <span class="keyword">if</span>(vp==0)
+            <span class="keyword">continue</span>
+        <span class="keyword">end</span>
+        <span class="comment">% unit vector along gradient</span>
+        u_x = C_x(i,j)/vp;
+        u_y = C_y(i,j)/vp;
+        <span class="comment">% interpolate</span>
+        vp_plus_u = BilinearInterpolation(C,i,i+sign(u_x),j,j+sign(u_y),i+u_x,j+u_y);
+        vp_minus_u = BilinearInterpolation(C,i,i-sign(u_x),j,j-sign(u_y),i-u_x,j-u_y);
+        <span class="keyword">if</span>(vp &lt; vp_plus_u || vp &lt; vp_minus_u)
+            C_nms(i,j) = 0;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+figure(), imagesc(im_0), title(<span class="string">"Original Image"</span>), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+figure(), imagesc(cast(C,<span class="string">'uint8'</span>)), title(<span class="string">"Cornerness"</span>), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+figure(), imagesc(cast(C_nms,<span class="string">'uint8'</span>)), title(<span class="string">"Cornerness - NonMax Suppresion"</span>), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+</pre><h2 id="10">Bilinear Interpolation</h2><p>Bilinear Interpolation, given the corners of the square in which (x,y) lies (from previous assignment)</p><pre class="codeinput"><span class="keyword">function</span> [val] = BilinearInterpolation(img, x1, x2, y1, y2, x, y)
+    img = double(img);
+    D = (x1-x2)*(y1-y2);
+    q1 = img(x1,y1)*(x2-x)*((y2-y)/D);
+    q2 = img(x1,y2)*(x2-x)*((y-y1)/D);
+    q3 = img(x2,y1)*(x-x1)*((y2-y)/D);
+    q4 = img(x2,y2)*(x-x1)*((y-y1)/D);
+    val = q1 + q2 + q3 + q4;
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="myHarrisCornerDetector_06.png" alt=""> <img vspace="5" hspace="5" src="myHarrisCornerDetector_07.png" alt=""> <img vspace="5" hspace="5" src="myHarrisCornerDetector_08.png" alt=""> <h2 id="11">Parameter Values used</h2><p>sigma(gaussian kernel of w(u,v)) = 4</p><p>sigma_smoothing = 1.5</p><p>k(cornerness) = 0.24</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Question 1 - Harris Corner Detection
+% First, read in the image, and apply gaussian smoothing with standard
+% deviation sigma_smoothing. Then, compute the x and y derivative images
+% $I_x$ and $I_y$ and hence the structure tensor A at each point. Finally, 
+% use the eigenvalues $\lambda_1$ and $\lambda_2$ at each point to find 
+% cornerness, C, given by
+% $$ C = \lambda_1\times\lambda_2 - k(\lambda_1 + \lambda_2)^2 $$
+%%
+myNumOfColors = 200;
+myColorScale = [ [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' ];
+im_0 = load("../data/boat.mat");
+im_0 = cast(im_0.imageOrig, 'uint8');
+[M,N] = size(im_0);
+% Gaussian Smoothing
+sigma_smoothing = 4;
+im = imgaussfilt(im_0, sigma_smoothing);
+%% Derivative Images
+% Convolve the smoothed image with the sobel operator to compute the x and
+% y derivatives of the image. Display these. 
+% Note that the x derivative will highlight vertical edges, while the y
+% derivative will highlight horizontal edges. 
+%%
+sobel_x = [-1 0 1; -2 0 2; -1 0 1];
+sobel_y = [1 2 1; 0 0 0; -1 -2 -1];
+
+im_Ix = conv2(im, sobel_x, 'same'); 
+im_Iy = conv2(im, sobel_y, 'same'); 
+
+figure(), imagesc(cast(im_Ix,'uint8')), title("X derivative"), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+figure(), imagesc(cast(im_Iy,'uint8')), title("Y derivative"), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+
+%% Structure Tensor Calculation
+% To compute the structure tensor, observe from its formula that the first
+% entry of the structure tensor matrix (the summation) is nothing but the 
+% filter w(u,v) convolved with an image with value at each location equal 
+% to the square of the x derivative of the image at that location. 
+% Similarly for the other entries.
+% We use these observations to compute the entries of the structure tensor
+% A at each point, and then use this to compute the eigenvalues of the
+% structure tensor at each point. 
+% Finally, display the images corresponding to the matrices that store the
+% eigenvalues. 
+% We can observe that along edges of the ship's hull, for example, the
+% second eigenvalue comes out to be large, while the first comes out to be
+% small. Only along corners are both eigenvalues large. 
+% The first eigenvalue may thus be called the "principal" eigenvalue, since
+% it seems to determine which points we actually classify as corners. 
+% Note that in our case, w(u,v) is a standard gaussian kernel of bandwidth
+% parameter sigma. 
+% Sigma is kept relatively small, since if we increase it, more points
+% along edges are attributed as corners, which we don't want. 
+%%
+im_Ix2 = im_Ix.*im_Ix;
+im_Iy2 = im_Iy.*im_Iy;
+im_IxIy = im_Ix.*im_Iy;
+
+% structure tensor evaluation
+sigma = 1.5;
+% matrices corresponding to A11, A12=A21 and A22 
+A11_mat = imgaussfilt(im_Ix2, sigma);
+A12_mat = imgaussfilt(im_IxIy, sigma);
+A22_mat = imgaussfilt(im_Iy2, sigma);
+% store eigenvalues in two matrices
+im_lambda1 = zeros(M,N);
+im_lambda2 = zeros(M,N);
+% at each pixel (i,j), compute A11, A12=A21, and A22, and hence eigenvalues 
+
+for i = 1 : M
+    for j = 1 : N
+        % structure tensor
+        A11 = A11_mat(i,j);
+        A12 = A12_mat(i,j);
+        A22 = A22_mat(i,j);
+        A = [A11 A12; A12 A22];
+        % eigenvalues
+        e = eig(A);
+        im_lambda1(i,j) = e(1);
+        im_lambda2(i,j) = e(2);
+    end
+end
+
+figure(), imagesc(cast(im_lambda1,'uint8')), title("1st eigenvalue"), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+figure(), imagesc(cast(im_lambda2,'uint8')), title("2nd eigenvalue"), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+
+
+%% Cornerness Measure 
+% Using the two matrices to store the two eigenvalues at each point, we
+% compute the cornerness measure at each point, tuned by the free parameter
+% 'k'.
+% Note that k is kept on the higher side since we don't want too many
+% pixels to be denoted as corners. 
+%%
+k = 0.24;
+C = (im_lambda1 .* im_lambda2) - k*((im_lambda1 + im_lambda2).*(im_lambda1 + im_lambda2));
+
+%% Non max suppression (using Bilinear Interpolation)
+% To refine the result, apply non-maximum suppression on C. However, this
+% is not expected to significantly improve the result since most of the
+% image C has flat regions of negligible cornerness, with sparsely
+% distributed "corner" points. 
+%%
+C_nms = C;
+% gradient of cornerness image
+C_x = conv2(C, sobel_x, 'same');
+C_y = conv2(C, sobel_y, 'same');
+for i = 2 : M-1
+    for j = 2 : N-1
+        % gradient magnitude
+        vp = sqrt(C_x(i,j)^2 + C_y(i,j)^2);
+        if(vp==0)
+            continue
+        end
+        % unit vector along gradient
+        u_x = C_x(i,j)/vp;
+        u_y = C_y(i,j)/vp;
+        % interpolate
+        vp_plus_u = BilinearInterpolation(C,i,i+sign(u_x),j,j+sign(u_y),i+u_x,j+u_y);
+        vp_minus_u = BilinearInterpolation(C,i,i-sign(u_x),j,j-sign(u_y),i-u_x,j-u_y);
+        if(vp < vp_plus_u || vp < vp_minus_u)
+            C_nms(i,j) = 0;
+        end
+    end
+end
+        
+figure(), imagesc(im_0), title("Original Image"), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+figure(), imagesc(cast(C,'uint8')), title("Cornerness"), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;
+figure(), imagesc(cast(C_nms,'uint8')), title("Cornerness - NonMax Suppresion"), colormap(myColorScale), daspect([1 1 1]), colorbar, truesize;        
+
+%% Bilinear Interpolation
+% Bilinear Interpolation, given the corners of the square in which (x,y)
+% lies (from previous assignment)
+function [val] = BilinearInterpolation(img, x1, x2, y1, y2, x, y)
+    img = double(img);
+    D = (x1-x2)*(y1-y2);
+    q1 = img(x1,y1)*(x2-x)*((y2-y)/D);
+    q2 = img(x1,y2)*(x2-x)*((y-y1)/D);
+    q3 = img(x2,y1)*(x-x1)*((y2-y)/D);
+    q4 = img(x2,y2)*(x-x1)*((y-y1)/D);
+    val = q1 + q2 + q3 + q4;
+end
+
+%% Parameter Values used
+% sigma(gaussian kernel of w(u,v)) = 4
+%
+% sigma_smoothing = 1.5
+%
+% k(cornerness) = 0.24
+
+##### SOURCE END #####
+--></body></html>
